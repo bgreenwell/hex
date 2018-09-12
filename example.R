@@ -1,0 +1,20 @@
+library(tidyverse)
+library(raster)
+library(sf)
+
+
+usa <- getData("GADM", country = "USA", level = 1)
+ohio <- usa[usa$NAME_1 == "Ohio", ] %>%
+  disaggregate() %>%
+  geometry()
+
+hex_points <- ohio %>%
+  spsample(type = "hexagonal", cellsize = 0.3)
+
+source("hexwall.R")
+hexwall(
+  "hex-logos",
+  sticker_width = 20,
+  coords = hex_points@coords,
+  sort_mode = "random"
+)
